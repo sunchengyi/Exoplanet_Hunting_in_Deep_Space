@@ -1,13 +1,17 @@
 
 from tensorflow.keras import layers
+from tensorflow.keras.callbacks import Callback
 import numpy as np
-from sklearn.metrics import precision_score, recall_score, accuracy_score,\
-                                f1_score, confusion_matrix
 
+from sklearn.metrics import precision_score, recall_score, accuracy_score,\
+                            f1_score, confusion_matrix
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.preprocessing import Normalizer
+
 from imblearn.over_sampling import SMOTE
+
 import matplotlib.pyplot as plt
+
 from scipy.signal import spectrogram
 import scipy
 from scipy.ndimage import uniform_filter1d
@@ -91,7 +95,7 @@ def cv_pred(classifier, X, y, n_splits):
     return y_pred, y_label
 
 #-------------------------------------------------------------------------
-def model_evluator(X, y, model, n_splits=5):
+def model_evaluator(X, y, model, n_splits=5):
     Y_pre, Y_label = cv_pred(model, X, y, n_splits)
     return scores_predict(Y_pre, Y_label)
 
@@ -264,7 +268,25 @@ def data_transformer_final(data, size_filter=15, mode_filter='wrap'):
 
 #-------------------------------------------------------------------------
 def conv1d_block(filters, name, kernel_size=15, pool_size=4):
-    return [layers.Conv1D(filters=filters, kernel_size=kernel_size, use_bias=False, name=name),
-                    layers.BatchNormalization(name=f"{name}_bn"),
-                    layers.Activation('relu',name=f"{name}_act"),
-                    layers.MaxPool1D(pool_size=pool_size,strides=pool_size, name=f"{name}_max")]
+    return [layers.Conv1D(filters=filters, kernel_size=kernel_size, use_bias=False, 
+                          name=name),
+            layers.BatchNormalization(name=f"{name}_bn"),
+            layers.Activation('relu',name=f"{name}_act"),
+            layers.MaxPool1D(pool_size=pool_size,strides=pool_size, 
+                             name=f"{name}_max")]
+#-------------------------------------------------------------------------
+class Metrics_f1_precision_recall(Callback):
+    '''
+    Custom a callback to calculate the f1 score, precison and recall at the 
+    end of each epoch on the validation data.
+    '''
+    def on_epoch_end(self, epoch, logs=None):
+        val_x, val_y = self.model.validation_data[:2]
+        val_pred = self.model.predict(val_x, batch_size=1500).round()
+        _val_f1 = f1_score(val_y, val_pred)
+        _val_precision = precision_score(val_y, val_pred)
+        _val_recall = recall_score(val_y, val_pred)
+        print('f-val_f1: {_val_f1:.3f} - val_precision: {_val_precision: .3f} '
+              '- val_recall: {val_recall: .3f}')
+
+
