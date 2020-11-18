@@ -7,6 +7,9 @@ Then we train a LinearSVC by using the normalized spectral of detrended
 data and test it on the test data.  
 The score on the test data is: **1.0 precision, 0.6 recal and 0.75 f1 score**.  
 
-In the next step,  CNN-1D will be used to classify the data. Now just complete the conv-1d model construction.  
+In the next step,  CNN-1D will be used to classify the data. Now complete the conv-1d model construction,
+and train the model by using the standardized data and the uniformly filtered data. 
+After 30 epochs, on the validation data (20% of the origni trainging data), 
+the scores are **1.0 precision, 0.71 recall and 0.83 f1 score**. Not test on the test data.
 
 The file, 'utils.py', includes the functions used in the notebook.
