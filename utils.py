@@ -280,13 +280,17 @@ class Metrics_f1_precision_recall(Callback):
     Custom a callback to calculate the f1 score, precison and recall at the 
     end of each epoch on the validation data.
     '''
+    def __init__(self, val_x, val_y, batch_size=500):
+        Callback.__init__(self)
+        self.val_x = val_x
+        self.val_y = val_y
+        self.batch_size = batch_size
     def on_epoch_end(self, epoch, logs=None):
-        val_x, val_y = self.model.validation_data[:2]
-        val_pred = self.model.predict(val_x, batch_size=1500).round()
-        _val_f1 = f1_score(val_y, val_pred)
-        _val_precision = precision_score(val_y, val_pred)
-        _val_recall = recall_score(val_y, val_pred)
-        print('f-val_f1: {_val_f1:.3f} - val_precision: {_val_precision: .3f} '
-              '- val_recall: {val_recall: .3f}')
+        val_pred = self.model.predict(self.val_x, batch_size=self.batch_size).round()
+        val_f1 = f1_score(self.val_y, val_pred)
+        val_precision = precision_score(self.val_y, val_pred)
+        val_recall = recall_score(self.val_y, val_pred)
+        print(f' - val_f1: {val_f1:.3f} - val_precision: {val_precision: .3f} '
+              f'- val_recall: {val_recall: .3f}')
 
 
