@@ -290,7 +290,8 @@ class Metrics_f1_precision_recall(Callback):
         val_f1 = f1_score(self.val_y, val_pred)
         val_precision = precision_score(self.val_y, val_pred)
         val_recall = recall_score(self.val_y, val_pred)
-        print(f' - val_f1: {val_f1:.3f} - val_precision: {val_precision: .3f} '
-              f'- val_recall: {val_recall: .3f}')
+        val_acc = accuracy_score(self.val_y, val_pred)
+        print(f' - val_acc: {val_acc:.3f} - val_precision: {val_precision: .3f} '
+              f'- val_recall: {val_recall: .3f} - val_f1: {val_f1: .3f}')
 
 
