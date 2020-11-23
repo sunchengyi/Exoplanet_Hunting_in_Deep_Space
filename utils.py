@@ -8,7 +8,7 @@ from sklearn.metrics import precision_score, recall_score, accuracy_score,\
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.preprocessing import Normalizer
 
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, RandomOverSampler
 
 import matplotlib.pyplot as plt
 
@@ -61,7 +61,8 @@ def scores_predict(y_pred, data_y):
 
 #-------------------------------------------------------------------------
 def label_balance(X, y):
-    balancing = SMOTE(sampling_strategy='minority', random_state=42)
+    # balancing = SMOTE(sampling_strategy='minority', random_state=42)
+    balancing = RandomOverSampler(random_state=42)
     return balancing.fit_resample(X, y)
 
 #-------------------------------------------------------------------------    
@@ -97,7 +98,7 @@ def cv_pred(classifier, X, y, n_splits):
 #-------------------------------------------------------------------------
 def model_evaluator(X, y, model, n_splits=5):
     Y_pre, Y_label = cv_pred(model, X, y, n_splits)
-    return scores_predict(Y_pre, Y_label)
+    return Y_pre, scores_predict(Y_pre, Y_label)
 
 #-------------------------------------------------------------------------
 def plot_flux_spectra(x):
